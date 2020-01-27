@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteActivity">
+    tools:context=".ui.note.NoteActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,13 +36,16 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayou">
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayou"
+        app:counterEnabled="true"
+        app:counterMaxLength="20">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title_note"
-            android:textSize="30sp" />
+            android:textSize="32sp"
+            android:maxLength="20"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
