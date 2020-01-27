@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="title_note">Titulo da nota</string>
+    <string name="descri_note">Descrição</string>
+    <string name="save">Salvar</string>
+    <string name="note">Anotação</string>
+    <string name="notes">Notas</string>
 </resources>
