@@ -22,16 +22,15 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
     @Override
     public void setIdNote(int id) {
         if(id != Constants.ID_NEW_NOTE){
-            //buscar no dataManager
-
-            setNoteView();
+            setNoteView(getDataManager().getAllNotes().get(id));
         }else
             note = new Note();
     }
 
 
 
-    private void setNoteView(){
+    private void setNoteView(Note note){
+        this.note = note;
         getMvpView().setNoteTitle(note.getTitle());
         getMvpView().setNoteDescription(note.getDescription());
     }
@@ -43,7 +42,7 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
         note.setTitle(getMvpView().getNoteTitle());
         note.setDescription(getMvpView().getNoteDescription());
 
-
+        //salvar no dataManager
 
         getMvpView().close();
     }

@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.jlmcdeveloper.notes.R;
 import com.jlmcdeveloper.notes.ui.base.BaseActivity;
 import com.jlmcdeveloper.notes.ui.main.MainActivity;
@@ -33,24 +33,40 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
     @BindView(R.id.multiAutoCompleteTextView_descrip)
     MultiAutoCompleteTextView etDescription;
 
+    @BindView(R.id.textInputLayout_title)
+    TextInputLayout textInputLayoutTitle;
+
+    @BindView(R.id.textInputLayout_descri)
+    TextInputLayout textInputLayoutDescri;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_note);
 
         getActivityComponent().inject(this);
 
-        presenter.onAttach(this);
-
         ButterKnife.bind(this);
+
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+        presenter.onAttach(this);
         presenter.setIdNote(getIntent().getIntExtra("id",-1));
+    }
+
+
+    // animação para nova nota
+    @Override
+    protected void onResume() {
+        super.onResume();
+        textInputLayoutTitle.setHintAnimationEnabled(true);
+        textInputLayoutDescri.setHintAnimationEnabled(true);
     }
 
 
@@ -74,6 +90,10 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        presenter.cancel();
+    }
 
     @Override
     protected void onDestroy() {
@@ -85,7 +105,7 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
 
     @Override
     public String getNoteTitle() {
-        return etTitle.getText().toString();
+        return Objects.requireNonNull(etTitle.getText()).toString();
     }
 
     @Override

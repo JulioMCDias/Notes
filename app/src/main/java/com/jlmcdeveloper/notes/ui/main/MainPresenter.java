@@ -5,6 +5,7 @@ import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BasePresenter;
 import com.jlmcdeveloper.notes.util.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,9 +20,7 @@ public class MainPresenter<V extends MainMvpView> extends BasePresenter<V> imple
 
     @Override
     public List<Note> getAllNotes() {
-
-
-        return null;
+        return getDataManager().getAllNotes();
     }
 
     @Override

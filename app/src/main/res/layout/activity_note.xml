@@ -28,7 +28,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/textInputLayout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,6 +36,7 @@
         android:layout_marginEnd="8dp"
         app:counterEnabled="true"
         app:counterMaxLength="20"
+        app:hintAnimationEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayou">
@@ -62,15 +63,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_title" />
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout_descri"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        app:hintAnimationEnabled="false"
+        app:counterEnabled="true"
+        app:counterMaxLength="500"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider">
@@ -79,9 +85,10 @@
             android:id="@+id/multiAutoCompleteTextView_descrip"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/descri_note"
+            android:layout_weight="1"
             android:gravity="start"
-            android:minLines="25"/>
+            android:hint="@string/descri_note"
+            android:maxLength="500" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
