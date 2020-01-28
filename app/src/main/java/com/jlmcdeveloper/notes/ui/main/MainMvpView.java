@@ -4,4 +4,5 @@ import com.jlmcdeveloper.notes.ui.base.MvpView;
 
 public interface MainMvpView extends MvpView {
 
+    void openNoteActivity(int idNode);
 }

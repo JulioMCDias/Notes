@@ -28,10 +28,12 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_floating"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:src="@drawable/ic_add_white_36dp"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_white_36dp"
+        android:onClick="btnNewNote" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

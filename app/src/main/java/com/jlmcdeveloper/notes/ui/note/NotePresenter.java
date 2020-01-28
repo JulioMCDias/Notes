@@ -1,12 +1,15 @@
 package com.jlmcdeveloper.notes.ui.note;
 
 import com.jlmcdeveloper.notes.data.DataManager;
+import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BasePresenter;
+import com.jlmcdeveloper.notes.util.Constants;
 
 import javax.inject.Inject;
 
 public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> implements NoteMvpPresenter<V> {
 
+    private Note note;
 
     @Inject
     public NotePresenter(DataManager dataManager) {
@@ -15,4 +18,38 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
     }
 
 
+
+    @Override
+    public void setIdNote(int id) {
+        if(id != Constants.ID_NEW_NOTE){
+            //buscar no dataManager
+
+            setNoteView();
+        }else
+            note = new Note();
+    }
+
+
+
+    private void setNoteView(){
+        getMvpView().setNoteTitle(note.getTitle());
+        getMvpView().setNoteDescription(note.getDescription());
+    }
+
+
+
+    @Override
+    public void save() {
+        note.setTitle(getMvpView().getNoteTitle());
+        note.setDescription(getMvpView().getNoteDescription());
+
+
+
+        getMvpView().close();
+    }
+
+    @Override
+    public void cancel() {
+        getMvpView().close();
+    }
 }
