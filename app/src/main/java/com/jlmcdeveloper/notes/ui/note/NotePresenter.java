@@ -3,7 +3,7 @@ package com.jlmcdeveloper.notes.ui.note;
 import com.jlmcdeveloper.notes.data.DataManager;
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BasePresenter;
-import com.jlmcdeveloper.notes.util.Constants;
+import com.jlmcdeveloper.notes.utils.Constants;
 
 import javax.inject.Inject;
 
@@ -20,9 +20,7 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
 
     @Override
     public void setIdNote(Long id) {
-        if(id.equals(Constants.ID_NEW_NOTE)){
-            note = new Note();
-        }else
+        if(!id.equals(Constants.ID_NEW_NOTE))
             setNoteView(getDataManager().getAllNotes().get(id));
     }
 
@@ -38,10 +36,19 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
 
     @Override
     public void save() {
+        if(note == null)
+            note = new Note();
         note.setTitle(getMvpView().getNoteTitle());
         note.setDescription(getMvpView().getNoteDescription());
         //salvar no dataManager
         getDataManager().getAllNotes().put(note);
+        getMvpView().close();
+    }
+
+    @Override
+    public void delete() {
+        if(note != null)
+            getDataManager().getAllNotes().remove(note);
         getMvpView().close();
     }
 

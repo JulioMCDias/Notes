@@ -82,6 +82,9 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
             case R.id.menu_save:
                 presenter.save();
                 break;
+            case R.id.menu_delete:
+                presenter.delete();
+                break;
             case android.R.id.home:
                 presenter.cancel();
                 break;

@@ -8,5 +8,7 @@ public interface NoteMvpPresenter<V extends NoteMvpView> extends MvpPresenter<V>
 
     void save();
 
+    void delete();
+
     void cancel();
 }

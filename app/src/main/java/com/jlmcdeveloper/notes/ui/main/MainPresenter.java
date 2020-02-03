@@ -3,9 +3,8 @@ package com.jlmcdeveloper.notes.ui.main;
 import com.jlmcdeveloper.notes.data.DataManager;
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BasePresenter;
-import com.jlmcdeveloper.notes.util.Constants;
+import com.jlmcdeveloper.notes.utils.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

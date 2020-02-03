@@ -5,4 +5,5 @@
     <string name="save">Salvar</string>
     <string name="note">Anotação</string>
     <string name="notes">Notas</string>
+    <string name="delete">apagar</string>
 </resources>
