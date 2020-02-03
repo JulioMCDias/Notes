@@ -4,7 +4,7 @@ import com.jlmcdeveloper.notes.ui.base.MvpPresenter;
 
 public interface NoteMvpPresenter<V extends NoteMvpView> extends MvpPresenter<V> {
 
-    void setIdNote(int id);
+    void setIdNote(Long id);
 
     void save();
 

@@ -6,6 +6,8 @@ import android.content.Context;
 
 import com.jlmcdeveloper.notes.data.AppDataManager;
 import com.jlmcdeveloper.notes.data.DataManager;
+import com.jlmcdeveloper.notes.data.db.AppObjectBox;
+import com.jlmcdeveloper.notes.data.db.ObjectBox;
 import com.jlmcdeveloper.notes.di.ContextApplication;
 
 import javax.inject.Singleton;
@@ -29,6 +31,12 @@ public class ApplicationModule {
         return application;
     }
 
+
+    @Provides
+    @Singleton
+    ObjectBox provideObjectBox(AppObjectBox objectBox){
+        return objectBox;
+    }
 
     @Provides
     @Singleton

@@ -57,7 +57,7 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         presenter.onAttach(this);
-        presenter.setIdNote(getIntent().getIntExtra("id",-1));
+        presenter.setIdNote(getIntent().getLongExtra("id",-1));
     }
 
 

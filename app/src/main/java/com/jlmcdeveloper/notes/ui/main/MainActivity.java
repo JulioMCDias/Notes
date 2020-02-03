@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
 
     @Override
-    public void openNoteActivity(int idNode) {
+    public void openNoteActivity(Long idNode) {
         Intent intent = new Intent(this, NoteActivity.class);
         intent.putExtra("id",idNode);
         startActivity(intent);
