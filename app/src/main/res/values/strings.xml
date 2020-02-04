@@ -6,4 +6,11 @@
     <string name="note">Anotação</string>
     <string name="notes">Notas</string>
     <string name="delete">apagar</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Senha</string>
+    <string name="logar">Logar</string>
+    <string name="info_new_accont">Não possui uma conta?</string>
+    <string name="register">Cadastrar</string>
 </resources>

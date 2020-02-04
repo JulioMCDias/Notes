@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.jlmcdeveloper.notes.di.ContextActivity;
 import com.jlmcdeveloper.notes.di.PerActivity;
+import com.jlmcdeveloper.notes.ui.login.LoginMvpPresenter;
+import com.jlmcdeveloper.notes.ui.login.LoginMvpView;
+import com.jlmcdeveloper.notes.ui.login.LoginPresenter;
 import com.jlmcdeveloper.notes.ui.main.MainMvpPresenter;
 import com.jlmcdeveloper.notes.ui.main.MainMvpView;
 import com.jlmcdeveloper.notes.ui.main.MainPresenter;
@@ -48,4 +51,8 @@ public class ActivityModule {
         return presenter;
     }
 
+    @Provides
+    LoginMvpPresenter<LoginMvpView> provideLoginPresenter(LoginPresenter<LoginMvpView> presenter){
+        return presenter;
+    }
 }
