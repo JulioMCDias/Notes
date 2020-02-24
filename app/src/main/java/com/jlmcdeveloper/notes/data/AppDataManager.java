@@ -3,7 +3,6 @@ package com.jlmcdeveloper.notes.data;
 import android.content.Context;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.data.model.User;
@@ -18,9 +17,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 @Singleton
@@ -43,25 +44,39 @@ public class AppDataManager implements DataManager {
     @Override
     public void setLogin(User user, Listener.Login lisUser) {
         this.user = user;
-        Call<User> loginResponse = apiRetrofit.setLogin(user);
-        loginResponse.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                if(response.body() !=null) {
-                    user.setId(response.body().getId());
-                    user.setName(response.body().getName());
-                    user.setEmail(response.body().getEmail());
-                }else
-                    Toast.makeText(context ,"Erro :"+response.toString(), Toast.LENGTH_SHORT).show();
-                lisUser.handle(user);
-            }
+        Observable<User> loginResponse = apiRetrofit.setLogin(user);
+        loginResponse
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<User>() {
 
-            @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                lisUser.handle(user);
-            }
-        });
+                               @Override
+                               public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                               }
+
+                               @Override
+                               public void onNext(@io.reactivex.annotations.NonNull User user1) {
+                                   if(user1 != null) {
+                                       user.setId(user1.getId());
+                                       user.setName(user1.getName());
+                                       user.setEmail(user1.getEmail());
+                                   }else
+                                       Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
+                                   lisUser.handle(user);
+                               }
+
+                               @Override
+                               public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                   Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
+                                   lisUser.handle(user);
+                               }
+
+                               @Override
+                               public void onComplete() {
+
+                               }
+                           });
     }
 
     @Override
@@ -73,26 +88,40 @@ public class AppDataManager implements DataManager {
     @Override
     public List<Note> getNotesServer(Listener.ResponseError responseError) {
         notes = new ArrayList<>();
-        Call<List<Note>> noteResponses = apiRetrofit.getNotes(user);
+        Observable<List<Note>> noteResponses = apiRetrofit.getNotes(user);
 
-        noteResponses.enqueue(new Callback<List<Note>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Note>> call,@NonNull Response<List<Note>> response) {
-                if(response.body() !=null) {
-                    notes.addAll(response.body());
-                    responseError.handle(false);
-                }else {
-                    Toast.makeText(context, "Erro :" + response.toString(), Toast.LENGTH_SHORT).show();
-                    responseError.handle(true);
-                }
-            }
+        noteResponses
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Note>>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
 
-            @Override
-            public void onFailure(@NonNull Call<List<Note>> call, @NonNull Throwable t) {
-                Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                responseError.handle(true);
-            }
-        });
+                            }
+
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull List<Note> notes1) {
+                                if(notes1 !=null) {
+                                    notes.addAll(notes1);
+                                    responseError.handle(false);
+                                }else {
+                                    Toast.makeText(context, "Erro" , Toast.LENGTH_SHORT).show();
+                                    responseError.handle(true);
+                                }
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Toast.makeText(context ,"Erro : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                responseError.handle(true);
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+
         return notes;
     }
 
@@ -100,63 +129,104 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void createNote(Note note, Listener.Note lisNote) {
-        Call<Note> noteResponse = apiRetrofit.createNote(note);
-        noteResponse.enqueue(new Callback<Note>() {
-            @Override
-            public void onResponse(@NonNull Call<Note> call, @NonNull Response<Note> response) {
-                if(response.body() != null)
-                    lisNote.handle(response.body());
-                else
-                    Toast.makeText(context ,"Erro :"+response.toString(), Toast.LENGTH_SHORT).show();
-            }
+        Observable<Note> noteResponse = apiRetrofit.createNote(note);
 
-            @Override
-            public void onFailure(@NonNull Call<Note> call, @NonNull Throwable t) {
-                Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-            }
-        });
+        noteResponse
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Note>() {
+                                @Override
+                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(@io.reactivex.annotations.NonNull Note note) {
+                                    if(note != null)
+                                        lisNote.handle(note);
+                                    else
+                                        Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                    Toast.makeText(context ,"Erro :"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
     }
 
 
     @Override
     public void updateNote(Note note, Listener.Note lisNote) {
-        Call<Note> noteResponse = apiRetrofit.updateNote(note);
-        noteResponse.enqueue(new Callback<Note>() {
-            @Override
-            public void onResponse(@NonNull Call<Note> call, @NonNull Response<Note> response) {
-                if(response.body() != null)
-                    lisNote.handle(response.body());
-                else
-                    Toast.makeText(context ,"Erro :"+response.toString(), Toast.LENGTH_SHORT).show();
-            }
+        Observable<Note> noteResponse = apiRetrofit.updateNote(note);
+        noteResponse
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Note>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                            }
 
-            @Override
-            public void onFailure(@NonNull Call<Note> call, @NonNull Throwable t) {
-                Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-            }
-        });
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull Note note) {
+                                if(note != null)
+                                    lisNote.handle(note);
+                                else
+                                    Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Toast.makeText(context ,"Erro: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
     }
 
     @Override
     public void deleteNote(Note note, Listener.ResponseError responseError) {
-        Call<Note> noteResponse = apiRetrofit.deleteNote(note);
-        noteResponse.enqueue(new Callback<Note>() {
-            @Override
-            public void onResponse(@NonNull Call<Note> call, @NonNull Response<Note> response) {
-                if(response.body() != null)
-                    responseError.handle(true);
-                else {
-                    Toast.makeText(context, "Erro :" + response.toString(), Toast.LENGTH_SHORT).show();
-                    responseError.handle(false);
-                }
-            }
+        Observable<Note> noteResponse = apiRetrofit.deleteNote(note);
 
-            @Override
-            public void onFailure(@NonNull Call<Note> call, @NonNull Throwable t) {
-                Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                responseError.handle(false);
-            }
-        });
+
+        noteResponse
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Note>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull Note note) {
+                                if(note != null)
+                                    responseError.handle(true);
+                                else {
+                                    Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
+                                    responseError.handle(false);
+                                }
+                            }
+
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Toast.makeText(context, "Erro :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                responseError.handle(false);
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
     }
 
 

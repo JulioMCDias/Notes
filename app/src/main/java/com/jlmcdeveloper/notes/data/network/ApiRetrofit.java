@@ -6,17 +6,19 @@ import com.jlmcdeveloper.notes.data.model.User;
 
 import java.util.List;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
+
+
 
 public interface ApiRetrofit {
 
-    Call<User> setLogin(User user);
+    Observable<User> setLogin(User user);
 
-    Call<List<Note>> getNotes(User user);
+    Observable<List<Note>> getNotes(User user);
 
-    Call<Note> createNote(Note note);
+    Observable<Note> createNote(Note note);
 
-    Call<Note> updateNote(Note note);
+    Observable<Note> updateNote(Note note);
 
-    Call<Note> deleteNote(Note note);
+    Observable<Note> deleteNote(Note note);
 }

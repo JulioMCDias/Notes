@@ -9,8 +9,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
@@ -24,6 +25,7 @@ public class AppApiRetrofit implements ApiRetrofit {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(ApiEndPoint.url)
                 .build();
 
@@ -32,27 +34,27 @@ public class AppApiRetrofit implements ApiRetrofit {
 
 
     @Override
-    public Call<User> setLogin(User loginRequest) {
+    public Observable<User> setLogin(User loginRequest) {
         return apiRestServer.setLogin(ApiEndPoint.setLogin, loginRequest);
     }
 
     @Override
-    public Call<List<Note>> getNotes(User loginResponse) {
+    public Observable<List<Note>> getNotes(User loginResponse) {
         return apiRestServer.getNotes(ApiEndPoint.getAllNotes, loginResponse);
     }
 
     @Override
-    public Call<Note> createNote(Note noteRequest) {
+    public Observable<Note> createNote(Note noteRequest) {
         return apiRestServer.setNote(ApiEndPoint.createNote, noteRequest);
     }
 
     @Override
-    public Call<Note> updateNote(Note noteRequest) {
+    public Observable<Note> updateNote(Note noteRequest) {
         return apiRestServer.setNote(ApiEndPoint.updateNote, noteRequest);
     }
 
     @Override
-    public Call<Note> deleteNote(Note noteRequest) {
+    public Observable<Note> deleteNote(Note noteRequest) {
         return apiRestServer.setNote(ApiEndPoint.deleteNote, noteRequest);
     }
 }
