@@ -22,9 +22,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteHole> {
     private List<Note> notes;
     private MainMvpPresenter<MainMvpView> presenter;
 
-    NoteAdapter(@NonNull MainMvpPresenter<MainMvpView> presenter){
+    NoteAdapter(@NonNull MainMvpPresenter<MainMvpView> presenter, List<Note> notes){
         this.presenter = presenter;
-        notes = presenter.getAllNotes();
+        this.notes = notes;
     }
 
     @NonNull

@@ -1,18 +1,13 @@
 package com.jlmcdeveloper.notes.ui.login;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.jlmcdeveloper.notes.R;
 import com.jlmcdeveloper.notes.ui.base.BaseActivity;
+import com.jlmcdeveloper.notes.ui.main.MainActivity;
 
 import javax.inject.Inject;
 
@@ -26,8 +21,8 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
     LoginMvpPresenter<LoginMvpView> presenter;
 
 
-    @BindView(R.id.inputText_email)
-    TextInputEditText inputTextEmail;
+    @BindView(R.id.inputText_name)
+    TextInputEditText inputTextName;
 
     @BindView(R.id.inputText_password)
     TextInputEditText inputTextPassword;
@@ -48,12 +43,27 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.btn_login)
     void btnLogin(){
-
+        presenter.setUser(inputTextName.getText().toString(), inputTextPassword.getText().toString());
     }
 
 
     @OnClick(R.id.btn_register)
     void btnRegister(){
 
+    }
+
+
+    @Override
+    public void finishedAnimation(String info) {
+        hideLoading();
+        Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void openMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

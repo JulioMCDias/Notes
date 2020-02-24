@@ -7,8 +7,11 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jlmcdeveloper.notes.R;
+import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BaseActivity;
 import com.jlmcdeveloper.notes.ui.note.NoteActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,8 +42,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         ButterKnife.bind(this);
 
         presenter.onAttach(this);
-
-        recyclerView.setAdapter(new NoteAdapter(presenter));
+        presenter.searchNotes();
     }
 
 
@@ -59,6 +61,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
         finish();
     }
 
-
-
+    @Override
+    public void updateNotes(List<Note> notes) {
+        recyclerView.setAdapter(new NoteAdapter(presenter, notes));
+    }
 }

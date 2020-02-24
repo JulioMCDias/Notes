@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MainMvpPresenter<V extends MainMvpView> extends MvpPresenter<V> {
 
-    List<Note> getAllNotes();
+    void searchNotes();
 
     void createNote();
 

@@ -37,11 +37,11 @@
         app:layout_constraintVertical_bias="0.132">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputText_email"
+            android:id="@+id/inputText_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="@string/email" />
+            android:hint="@string/name" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

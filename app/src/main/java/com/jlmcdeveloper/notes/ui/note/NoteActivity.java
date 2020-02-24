@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -124,6 +125,11 @@ public class NoteActivity extends BaseActivity implements NoteMvpView{
     @Override
     public void setNoteDescription(String description) {
         etDescription.setText(description);
+    }
+
+    @Override
+    public void setMessage(String info) {
+        Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
     }
 
     @Override

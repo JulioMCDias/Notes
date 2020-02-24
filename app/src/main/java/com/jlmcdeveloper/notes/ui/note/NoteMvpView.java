@@ -10,5 +10,7 @@ public interface NoteMvpView extends MvpView {
     void setNoteTitle(String title);
     void setNoteDescription(String description);
 
+    void setMessage(String info);
+
     void close();
 }

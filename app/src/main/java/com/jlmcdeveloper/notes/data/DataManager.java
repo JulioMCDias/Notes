@@ -2,13 +2,25 @@ package com.jlmcdeveloper.notes.data;
 
 
 import com.jlmcdeveloper.notes.data.model.Note;
+import com.jlmcdeveloper.notes.data.model.User;
 
 import java.util.List;
 
-import io.objectbox.Box;
-
 public interface DataManager {
 
-    Box<Note> getAllNotes();
+    void setLogin(User user, Listener.Login lisUser);
 
+    void createLogin(User user, Listener.Login lisUser);
+
+    List<Note> getNotesServer(Listener.ResponseError responseError);
+
+    void createNote(Note note, Listener.Note lisNote);
+
+    void updateNote(Note note, Listener.Note lisNote);
+
+    void deleteNote(Note note, Listener.ResponseError responseError);
+
+    List<Note> getNotes();
+
+    User getUser();
 }

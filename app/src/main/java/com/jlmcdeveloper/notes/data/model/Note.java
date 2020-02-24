@@ -1,28 +1,23 @@
 package com.jlmcdeveloper.notes.data.model;
 
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
 
-@Entity
 public class Note {
-
-    @Id
-    private Long id;
+    private Long noteID;
+    private Long userID;
     private String title;
     private String description;
 
-    public Note() {
+    public Long getNoteID() {
+        return noteID;
     }
 
-    public Note(String title, String description) {
-        this.title = title;
-        this.description = description;
+    public void setNoteID(Long noteID) {
+        this.noteID = noteID;
     }
 
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserID(Long userID) {
+        this.userID = userID;
     }
 
     public void setTitle(String title) {
@@ -33,8 +28,8 @@ public class Note {
         this.description = description;
     }
 
-    public Long getId() {
-        return id;
+    public Long getUserID() {
+        return userID;
     }
 
     public String getDescription() {
