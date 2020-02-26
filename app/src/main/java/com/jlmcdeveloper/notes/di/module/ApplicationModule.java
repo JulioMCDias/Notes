@@ -6,8 +6,8 @@ import android.content.Context;
 
 import com.jlmcdeveloper.notes.data.AppDataManager;
 import com.jlmcdeveloper.notes.data.DataManager;
-import com.jlmcdeveloper.notes.data.network.ApiRetrofit;
-import com.jlmcdeveloper.notes.data.network.AppApiRetrofit;
+import com.jlmcdeveloper.notes.data.network.AppVolleyRequestQueue;
+import com.jlmcdeveloper.notes.data.network.VolleyRequestQueue;
 import com.jlmcdeveloper.notes.di.ContextApplication;
 
 import javax.inject.Singleton;
@@ -34,8 +34,8 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    ApiRetrofit provideApiRetrofit(AppApiRetrofit apiRetrofit){
-        return apiRetrofit;
+    VolleyRequestQueue provideVolleyRequestQueue(AppVolleyRequestQueue volleyRequestQueue){
+        return volleyRequestQueue;
     }
 
     @Provides

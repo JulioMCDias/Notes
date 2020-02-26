@@ -4,6 +4,8 @@ package com.jlmcdeveloper.notes.data;
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.data.model.User;
 
+import org.json.JSONException;
+
 import java.util.List;
 
 public interface DataManager {

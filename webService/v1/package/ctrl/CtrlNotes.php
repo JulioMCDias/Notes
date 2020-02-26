@@ -18,7 +18,7 @@
 	$data = json_decode($postdata);
 
 	$note = new Note();
-	foreach ($data as $key => $value) $note->{$key} = $value;
+	foreach ($data->note as $key => $value) $note->{$key} = $value;
 	$note->create();
 	$response = $note->search();
         echo json_encode($response);
@@ -29,7 +29,7 @@
 	$data = json_decode($postdata);
 
 	$note = new Note();
-	foreach ($data as $key => $value) $note->{$key} = $value;
+	foreach ($data->note as $key => $value) $note->{$key} = $value;
 	$note->update();
 	$response = $note->search();
         echo json_encode($response);
@@ -39,7 +39,7 @@
 	$data = json_decode($postdata);
 
 	$note = new Note();
-	foreach ($data as $key => $value) $note->{$key} = $value;
+	foreach ($data->note as $key => $value) $note->{$key} = $value;
 	$note->delete();
 	$response = $note->search();
         echo json_encode($response);
@@ -51,9 +51,10 @@
 
 	$response = [];
 	$note = new Note();
-	foreach ($data as $key => $value) $note->{$key} = $value;
-	$note->userID = $data->id;
+	foreach ($data->user as $key => $value) $note->{$key} = $value;
+	$note->userID = $data->user->id;
 	$response = $note->searchAll();
+
         echo json_encode($response, true);
     }
 ?>

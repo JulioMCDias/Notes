@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.jlmcdeveloper.notes.AndroidApplication;
@@ -22,7 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         activityComponent = DaggerActivityComponent.builder()

@@ -3,37 +3,33 @@ package com.jlmcdeveloper.notes.data;
 import android.content.Context;
 import android.widget.Toast;
 
-
+import com.android.volley.NetworkError;
+import com.google.gson.internal.LinkedTreeMap;
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.data.model.User;
-import com.jlmcdeveloper.notes.data.network.ApiRetrofit;
-import com.jlmcdeveloper.notes.data.network.AppApiRetrofit;
+import com.jlmcdeveloper.notes.data.network.ApiEndPoint;
+import com.jlmcdeveloper.notes.data.network.GsonRequest;
+import com.jlmcdeveloper.notes.data.network.VolleyRequestQueue;
 import com.jlmcdeveloper.notes.di.ContextApplication;
 
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
 
 @Singleton
 public class AppDataManager implements DataManager {
-    private final ApiRetrofit apiRetrofit;
+    private final VolleyRequestQueue volleyRequestQueue;
     private final Context context;
     private List<Note> notes;
     private User user;
 
     @Inject
-    AppDataManager(AppApiRetrofit apiRetrofit,@ContextApplication Context context){
-        this.apiRetrofit = apiRetrofit;
+    AppDataManager(VolleyRequestQueue volleyRequestQueue, @ContextApplication Context context){
+        this.volleyRequestQueue = volleyRequestQueue;
         this.context = context;
     }
 
@@ -44,39 +40,31 @@ public class AppDataManager implements DataManager {
     @Override
     public void setLogin(User user, Listener.Login lisUser) {
         this.user = user;
-        Observable<User> loginResponse = apiRetrofit.setLogin(user);
-        loginResponse
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<User>() {
 
-                               @Override
-                               public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(ApiEndPoint.method, ApiEndPoint.setLogin);
+        params.put("user", user);
 
-                               }
+        GsonRequest<User> gsonRequest = new GsonRequest<>(ApiEndPoint.urlSetLogin, User.class, params,
+                response -> {
+                    if(response != null) {
+                        user.setId(response.getId());
+                        user.setName(response.getName());
+                        user.setEmail(response.getPassword());
+                    }else
+                        Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
+                    lisUser.handle(user);
 
-                               @Override
-                               public void onNext(@io.reactivex.annotations.NonNull User user1) {
-                                   if(user1 != null) {
-                                       user.setId(user1.getId());
-                                       user.setName(user1.getName());
-                                       user.setEmail(user1.getEmail());
-                                   }else
-                                       Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
-                                   lisUser.handle(user);
-                               }
+                }, error -> {
 
-                               @Override
-                               public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                   Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                                   lisUser.handle(user);
-                               }
+                    if (error instanceof NetworkError)
+                        Toast.makeText(context, "No network available", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+                    lisUser.handle(user);
+                });
 
-                               @Override
-                               public void onComplete() {
-
-                               }
-                           });
+        volleyRequestQueue.getRequestQueue().add(gsonRequest);
     }
 
     @Override
@@ -88,39 +76,34 @@ public class AppDataManager implements DataManager {
     @Override
     public List<Note> getNotesServer(Listener.ResponseError responseError) {
         notes = new ArrayList<>();
-        Observable<List<Note>> noteResponses = apiRetrofit.getNotes(user);
 
-        noteResponses
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Note>>() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(ApiEndPoint.method, ApiEndPoint.getAllNotes);
+        params.put("user", user);
 
-                            }
+        GsonRequest<List> gsonRequest = new GsonRequest<>(ApiEndPoint.urlGetNotes, List.class, params,
+                response -> {
+                    if (response != null) {
+                        for ( Object o : response) {
+                            Note n = new Note();
+                            n.setTitle((String) ((LinkedTreeMap) o).get("title"));
+                            n.setDescription((String) ((LinkedTreeMap) o).get("description"));
+                            n.setNoteID( Long.valueOf((String) ((LinkedTreeMap) o).get("noteID")));
+                            n.setUserID( Long.valueOf((String) ((LinkedTreeMap) o).get("userID")));
+                            notes.add(n);
+                            responseError.handle(true);
+                        }
 
-                            @Override
-                            public void onNext(@io.reactivex.annotations.NonNull List<Note> notes1) {
-                                if(notes1 !=null) {
-                                    notes.addAll(notes1);
-                                    responseError.handle(false);
-                                }else {
-                                    Toast.makeText(context, "Erro" , Toast.LENGTH_SHORT).show();
-                                    responseError.handle(true);
-                                }
-                            }
+                    } else {
+                        Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show();
+                        responseError.handle(true);
+                    }
 
-                            @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                Toast.makeText(context ,"Erro : " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                responseError.handle(true);
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+                }, error -> {
+                    Toast.makeText(context ,"Erro : " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    responseError.handle(true);
+                });
+        volleyRequestQueue.getRequestQueue().add(gsonRequest);
 
         return notes;
     }
@@ -129,104 +112,77 @@ public class AppDataManager implements DataManager {
 
     @Override
     public void createNote(Note note, Listener.Note lisNote) {
-        Observable<Note> noteResponse = apiRetrofit.createNote(note);
 
-        noteResponse
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Note>() {
-                                @Override
-                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(ApiEndPoint.method, ApiEndPoint.createNote);
+        params.put("note", note);
 
-                                }
+        GsonRequest<Note> gsonRequest = new GsonRequest<>(ApiEndPoint.urlSetNotes, Note.class, params,
+                response -> {
+                    if(response != null) {
+                        lisNote.handle(response);
+                    }else
+                        Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
 
-                                @Override
-                                public void onNext(@io.reactivex.annotations.NonNull Note note) {
-                                    if(note != null)
-                                        lisNote.handle(note);
-                                    else
-                                        Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                                }
+                }, error -> {
+            if (error instanceof NetworkError)
+                Toast.makeText(context, "No network available", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+        });
 
-                                @Override
-                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                    Toast.makeText(context ,"Erro :"+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
+        volleyRequestQueue.getRequestQueue().add(gsonRequest);
     }
 
 
     @Override
     public void updateNote(Note note, Listener.Note lisNote) {
-        Observable<Note> noteResponse = apiRetrofit.updateNote(note);
-        noteResponse
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Note>() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                            }
 
-                            @Override
-                            public void onNext(@io.reactivex.annotations.NonNull Note note) {
-                                if(note != null)
-                                    lisNote.handle(note);
-                                else
-                                    Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
-                            }
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(ApiEndPoint.method, ApiEndPoint.updateNote);
+        params.put("note", note);
 
-                            @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                Toast.makeText(context ,"Erro: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+        GsonRequest<Note> gsonRequest = new GsonRequest<>(ApiEndPoint.urlSetNotes, Note.class, params,
+                response -> {
+                    if(response != null) {
+                        lisNote.handle(response);
+                    }else
+                        Toast.makeText(context ,"Erro ", Toast.LENGTH_SHORT).show();
 
-                            @Override
-                            public void onComplete() {
+                }, error -> {
+            if (error instanceof NetworkError)
+                Toast.makeText(context, "No network available", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+        });
 
-                            }
-                        });
+        volleyRequestQueue.getRequestQueue().add(gsonRequest);
     }
 
     @Override
     public void deleteNote(Note note, Listener.ResponseError responseError) {
-        Observable<Note> noteResponse = apiRetrofit.deleteNote(note);
 
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(ApiEndPoint.method, ApiEndPoint.deleteNote);
+        params.put("note", note);
 
-        noteResponse
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Note>() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+        GsonRequest<Note> gsonRequest = new GsonRequest<>(ApiEndPoint.urlSetNotes, Note.class, params,
+                response -> {
+                    if(response != null)
+                        responseError.handle(true);
+                    else {
+                        Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
+                        responseError.handle(false);
+                    }
 
-                            }
+                }, error -> {
+            if (error instanceof NetworkError)
+                Toast.makeText(context, "No network available", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show();
+        });
 
-                            @Override
-                            public void onNext(@io.reactivex.annotations.NonNull Note note) {
-                                if(note != null)
-                                    responseError.handle(true);
-                                else {
-                                    Toast.makeText(context ,"Erro na comunicação", Toast.LENGTH_SHORT).show();
-                                    responseError.handle(false);
-                                }
-                            }
-
-                            @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                Toast.makeText(context, "Erro :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                responseError.handle(false);
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+        volleyRequestQueue.getRequestQueue().add(gsonRequest);
     }
 
 

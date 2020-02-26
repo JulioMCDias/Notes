@@ -10,15 +10,17 @@
         if( !is_array( $_SG ) ){
             $_SG = json_decode($_SG, true);
         }
-
-
-
+/*
+	File::writeInFile($postdata, 'w', '../../debug/save-car.txt');
+	$data = json_decode($postdata);	
+	File::writeInFile(var_export($data->user, true), 'w', '../../debug/testdata.txt');
+*/
 
     if( strcasecmp( $_SG['method'], 'setLogin' ) == 0 ){
 	$data = json_decode($postdata);
 
 	$login = new Login();
-	foreach ($data as $key => $value) $login->{$key} = $value;
+	foreach ($data->user as $key => $value) $login->{$key} = $value;
 	$response = $login->search();
         echo json_encode($response);
     }
@@ -26,11 +28,11 @@
 
 
 
-    else if( strcasecmp( $_SG['method'], 'createUser' ) == 0 ){
+    if( strcasecmp( $_SG['method'], 'createUser' ) == 0 ){
 	$data = json_decode($postdata);
 
 	$login = new Login();
-	foreach ($data as $key => $value) $login->{$key} = $value;
+	foreach ($data->user as $key => $value) $login->{$key} = $value;
 	$login->create();
 	$response = $login->search();
         echo json_encode($response);
