@@ -49,7 +49,7 @@ public class LoginActivity extends BaseActivity implements LoginMvpView {
 
     @OnClick(R.id.btn_register)
     void btnRegister(){
-
+        presenter.createUser(inputTextName.getText().toString(), inputTextPassword.getText().toString());
     }
 
 

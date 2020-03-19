@@ -18,6 +18,7 @@ import com.jlmcdeveloper.notes.ui.note.NotePresenter;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class ActivityModule {
@@ -28,6 +29,7 @@ public class ActivityModule {
         this.activity = appCompatActivity;
     }
 
+    public ActivityModule(){}
 
     @Provides
     @ContextActivity
@@ -40,6 +42,10 @@ public class ActivityModule {
         return activity;
     }
 
+    @Provides
+    CompositeDisposable provideCompositeDisposable() {
+        return new CompositeDisposable();
+    }
 
     @Provides
     MainMvpPresenter<MainMvpView> provideMainPresenter(MainPresenter<MainMvpView> presenter){

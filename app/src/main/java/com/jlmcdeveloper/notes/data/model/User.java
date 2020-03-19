@@ -1,18 +1,42 @@
 package com.jlmcdeveloper.notes.data.model;
 
-public class User {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
-    private Long id = -1L;
+@Entity(tableName = "users", indices = {@Index(value = "name", unique = true)})
+public class User {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private Long id;
+    @ColumnInfo(name = "name")
     private String name;
+    @ColumnInfo(name = "email")
     private String email;
+    @ColumnInfo(name = "password")
     private String password;
 
-    public User(String name, String password) {
+    public User(Long id, String name, String email, String password) {
+        this.id = id;
         this.name = name;
+        this.email = email;
         this.password = password;
     }
 
-    public User() {
+    @Ignore
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+        this.id = -1L;
+    }
+
+    @Ignore
+    public User(Long id, String name, String password) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
     }
 
     public Long getId() {

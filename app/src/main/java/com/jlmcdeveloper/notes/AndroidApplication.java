@@ -24,4 +24,10 @@ public class AndroidApplication extends Application {
     public ApplicationComponent getApplicationComponent() {
         return applicationComponent;
     }
+
+
+    // Needed to replace the component with a test specific one
+    public void setComponent(ApplicationComponent applicationComponent) {
+        this.applicationComponent = applicationComponent;
+    }
 }

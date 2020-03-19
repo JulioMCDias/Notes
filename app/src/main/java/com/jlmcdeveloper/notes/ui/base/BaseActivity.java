@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
     private ProgressDialog mProgressDialog;
 
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         activityComponent = DaggerActivityComponent.builder()
@@ -37,19 +37,23 @@ public abstract class BaseActivity extends AppCompatActivity implements MvpView 
     }
 
 
-    @Override
+
     public void showLoading() {
         hideLoading();
         mProgressDialog = showLoadingDialog(this);
     }
 
-    @Override
+
     public void hideLoading() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.cancel();
         }
     }
 
+
+    public void displayError(String info){
+        Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+    }
 
     public ProgressDialog showLoadingDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);

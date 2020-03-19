@@ -1,7 +1,7 @@
 package com.jlmcdeveloper.notes.data.network;
 
 public class ApiEndPoint {
-    static final String url = "http://192.168.0.193/webService/v1/";
+    public static final String url = "http://api-rnr.herokuapp.com/";
     static final String setLogin = "setLogin";
     public static final String createLogin = "createUser";
     static final String createNote = "createNote";

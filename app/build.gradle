@@ -37,13 +37,15 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
 
     // dependencies for local unit tests
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation 'junit:junit:4.13'
     testImplementation "org.mockito:mockito-core:2.15.0"
     testAnnotationProcessor "com.google.dagger:dagger-compiler:2.25.4"
 
     // tests
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "org.mockito:mockito-android:2.15.0"
+    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.25.4"
 
     // butter knife
     implementation 'com.jakewharton:butterknife:10.2.1'
@@ -51,11 +53,19 @@ dependencies {
 
     // rxJava
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
 
     // retorfit
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.7.1'
+    // okhttp3
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
+    implementation 'com.squareup.okhttp3:mockwebserver:4.4.0'
+
+    // local database
+    implementation "androidx.room:room-runtime:2.2.4"
+    implementation "androidx.room:room-rxjava2:2.2.4"
+    annotationProcessor "androidx.room:room-compiler:2.2.4"
 }

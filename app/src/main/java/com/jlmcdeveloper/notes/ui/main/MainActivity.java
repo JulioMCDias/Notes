@@ -24,6 +24,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     @Inject
     MainMvpPresenter<MainMvpView> presenter;
 
+    private NoteAdapter noteAdapter;
+
     @BindView(R.id.recyclerView_note)
     RecyclerView recyclerView;
 
@@ -43,6 +45,8 @@ public class MainActivity extends BaseActivity implements MainMvpView{
 
         presenter.onAttach(this);
         presenter.searchNotes();
+        noteAdapter = new NoteAdapter(presenter, presenter.getNotes());
+        recyclerView.setAdapter(noteAdapter);
     }
 
 
@@ -62,7 +66,7 @@ public class MainActivity extends BaseActivity implements MainMvpView{
     }
 
     @Override
-    public void updateNotes(List<Note> notes) {
-        recyclerView.setAdapter(new NoteAdapter(presenter, notes));
+    public void updateNotes() {
+        noteAdapter.notifyDataSetChanged();
     }
 }

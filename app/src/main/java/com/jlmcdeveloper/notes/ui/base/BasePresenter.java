@@ -4,14 +4,18 @@ import com.jlmcdeveloper.notes.data.DataManager;
 
 import javax.inject.Inject;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     private V mvpView;
     private final DataManager dataManager;
+    private final CompositeDisposable compositeDisposable;
 
     @Inject
-    public BasePresenter(DataManager dataManager){
+    public BasePresenter(DataManager dataManager, CompositeDisposable compositeDisposable){
         this.dataManager = dataManager;
+        this.compositeDisposable = compositeDisposable;
     }
 
 
@@ -23,6 +27,7 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
     @Override
     public void onDetach() {
         mvpView = null;
+        compositeDisposable.dispose();
     }
 
 
@@ -32,5 +37,9 @@ public class BasePresenter<V extends MvpView> implements MvpPresenter<V> {
 
     public DataManager getDataManager() {
         return dataManager;
+    }
+
+    public CompositeDisposable getCompositeDisposable() {
+        return compositeDisposable;
     }
 }

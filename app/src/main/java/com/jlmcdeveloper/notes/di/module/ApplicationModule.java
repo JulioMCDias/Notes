@@ -6,8 +6,8 @@ import android.content.Context;
 
 import com.jlmcdeveloper.notes.data.AppDataManager;
 import com.jlmcdeveloper.notes.data.DataManager;
-import com.jlmcdeveloper.notes.data.network.ApiRetrofit;
-import com.jlmcdeveloper.notes.data.network.AppApiRetrofit;
+import com.jlmcdeveloper.notes.data.network.ApiManager;
+import com.jlmcdeveloper.notes.data.network.ApiRestServer;
 import com.jlmcdeveloper.notes.di.ContextApplication;
 
 import javax.inject.Singleton;
@@ -31,12 +31,6 @@ public class ApplicationModule {
         return application;
     }
 
-
-    @Provides
-    @Singleton
-    ApiRetrofit provideApiRetrofit(AppApiRetrofit apiRetrofit){
-        return apiRetrofit;
-    }
 
     @Provides
     @Singleton

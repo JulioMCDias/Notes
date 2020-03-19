@@ -6,22 +6,22 @@ import com.jlmcdeveloper.notes.data.model.User;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 
 public interface ApiRestServer {
 
-    @POST("package/ctrl/CtrlLogin.php")
-    Observable<User> setLogin(@Query("method") String method, @Body User loginRequest);
+    @POST("peoples/")
+    Single<User> setLogin(@Query("method") String method, @Body User loginRequest);
 
-    @POST("package/ctrl/CtrlNotes.php")
-    Observable<List<Note>> getNotes(@Query("method") String method, @Body User loginResponse);
+    @POST("notes/")
+    Single<List<Note>> getNotes(@Query("method") String method, @Body User loginResponse);
 
-    @POST("package/ctrl/CtrlNotes.php")
-    Observable<Note> setNote(@Query("method") String method, @Body Note noteRequest);
+    @POST("notes/")
+    Single<Note> setNote(@Query("method") String method, @Body Note noteRequest);
 
 }

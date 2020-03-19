@@ -1,32 +1,23 @@
 package com.jlmcdeveloper.notes.ui.note;
 
 import com.jlmcdeveloper.notes.data.DataManager;
-import com.jlmcdeveloper.notes.data.Listener;
 import com.jlmcdeveloper.notes.data.model.Note;
 import com.jlmcdeveloper.notes.ui.base.BasePresenter;
 import com.jlmcdeveloper.notes.utils.Constants;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> implements NoteMvpPresenter<V> {
 
     private Note note;
-    private Listener.Note noteListener;
-    private Listener.ResponseError responseError;
 
     @Inject
-    public NotePresenter(DataManager dataManager) {
-        super(dataManager);
-        noteListener = note1 -> {
-            if(note1.getNoteID() == -1)
-                getMvpView().setMessage("Erro ao gravar");
-
-        };
-
-        responseError = error -> {
-            if(!error)
-                getMvpView().setMessage("Erro ao deletar");
-        };
+    public NotePresenter(DataManager dataManager, CompositeDisposable compositeDisposable) {
+        super(dataManager, compositeDisposable);
     }
 
 
@@ -66,7 +57,16 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
     private void updateNote(){
         note.setTitle(getMvpView().getNoteTitle());
         note.setDescription(getMvpView().getNoteDescription());
-        getDataManager().updateNote(note, noteListener);
+        getCompositeDisposable().add(getDataManager()
+                .updateNoteRemote(note)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((note1, throwable) -> {
+                    if(note1 == null || note1.getNoteID() == -1)
+                        getMvpView().setMessage("Erro ao Atualizar");
+                }));
+
+        getDataManager().updateNoteLocal(note);
     }
 
     private void createNote(){
@@ -74,13 +74,41 @@ public class NotePresenter<V extends NoteMvpView> extends BasePresenter<V> imple
         note.setTitle(getMvpView().getNoteTitle());
         note.setDescription(getMvpView().getNoteDescription());
         note.setUserID(getDataManager().getUser().getId());
-        getDataManager().createNote(note, noteListener);
+        getCompositeDisposable().add(getDataManager()
+                .createNoteRemote(note)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((note1, throwable) -> {
+                    if(note1 == null || note1.getNoteID() == -1)
+                        getMvpView().setMessage("Erro ao Salvar");
+                }));
+
+        getCompositeDisposable().add(getDataManager()
+                .createNoteLocal(note)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
     }
 
     @Override
     public void delete() {
-        if(note != null)
-            getDataManager().deleteNote(note, responseError);
+        if(note != null) {
+            getCompositeDisposable().add(getDataManager()
+                    .deleteNoteRemote(note)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((note1, throwable) -> {
+                        if(note1 == null || note1.getNoteID() == -1)
+                            getMvpView().setMessage("Erro ao gravar");
+                    }));
+
+            getCompositeDisposable().add(getDataManager()   //local
+                    .deleteNoteLocal(note)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe());
+        }
+
         getMvpView().close();
     }
 
